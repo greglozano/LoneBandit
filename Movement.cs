@@ -63,68 +63,88 @@ public class Movement : MonoBehaviour
           transform.position.y,
           transform.position.z - 10);
 
-        Velocity = Vector3.zero;
-        if (Input.GetKey(KeyCode.W))
-        {
-            playerAnim.Play("PlayerWalkUp", 0);
-            Velocity += Vector3.up;
-        }
-
-        else if (Input.GetKey(KeyCode.S))
-        {
-            playerAnim.Play("PlayerWalkDown", 0);
-            Velocity += Vector3.down;
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            playerAnim.Play("PlayerWalkRight", 0);
-            Velocity += Vector3.right;
-        }
-
-        else if (Input.GetKey(KeyCode.A))
-        {
-            playerAnim.Play("PlayerWalkLeft", 0);
-            Velocity += Vector3.left;
-        }
-        if (Velocity == Vector3.zero)
-        {
-            playerAnim.Play("PlayerIdle", 0);
-        }
-        transform.position += (Velocity * playerspeed) * Time.deltaTime;
-        //  if (Input.GetKeyDown(KeyCode.W))
-        //    KeysPressedInFrame.Add(KeyCode.W);
-        //else if (Input.GetKeyUp(KeyCode.W))
-        //  KeysPressedInFrame.Remove(KeyCode.W);
-
-        //if (Input.GetKeyDown(KeyCode.S))
-        //    KeysPressedInFrame.Add(KeyCode.S);
-        //else if (Input.GetKeyUp(KeyCode.S))
-        //   KeysPressedInFrame.Remove(KeyCode.S);
-
-        //if (Input.GetKeyDown(KeyCode.A))
-        //  KeysPressedInFrame.Add(KeyCode.A);
-        //else if (Input.GetKeyUp(KeyCode.A))
-        //  KeysPressedInFrame.Remove(KeyCode.A);
-
-        // if (Input.GetKeyDown(KeyCode.D))
-        //   KeysPressedInFrame.Add(KeyCode.D);
-        //else if (Input.GetKeyUp(KeyCode.D))
-        //  KeysPressedInFrame.Remove(KeyCode.D);
-
-        //if (KeysPressedInFrame.Count > 0)
+       // Velocity = Vector3.zero;
+        //if (Input.GetKey(KeyCode.W))
         //{
-        //   LastKeyPressedInFrame = KeysPressedInFrame[^1];
-        // LastKeyDirection = LastKeyPressedInFrame;
+         //   
+          //  Velocity += Vector3.up;
         //}
-        //else
-        //  LastKeyPressedInFrame = KeyCode.None;
+
+       // else if (Input.GetKey(KeyCode.S))
+        //{
+          //  
+            //Velocity += Vector3.down;
+        //}
+
+        //if (Input.GetKey(KeyCode.D))
+        //{
+          //  
+            //Velocity += Vector3.right;
+        //}
+
+        //else if (Input.GetKey(KeyCode.A))
+        //{
+          //  
+           // Velocity += Vector3.left;
+       // }
+        //if (Velocity == Vector3.zero)
+        //{
+          //  
+        //}
+        //transform.position += (Velocity * playerspeed) * Time.deltaTime;
+          if (Input.GetKeyDown(KeyCode.W))
+            KeysPressedInFrame.Add(KeyCode.W);
+        else if (Input.GetKeyUp(KeyCode.W))
+          KeysPressedInFrame.Remove(KeyCode.W);
+
+        if (Input.GetKeyDown(KeyCode.S))
+            KeysPressedInFrame.Add(KeyCode.S);
+        else if (Input.GetKeyUp(KeyCode.S))
+           KeysPressedInFrame.Remove(KeyCode.S);
+
+        if (Input.GetKeyDown(KeyCode.A))
+          KeysPressedInFrame.Add(KeyCode.A);
+        else if (Input.GetKeyUp(KeyCode.A))
+          KeysPressedInFrame.Remove(KeyCode.A);
+
+         if (Input.GetKeyDown(KeyCode.D))
+           KeysPressedInFrame.Add(KeyCode.D);
+        else if (Input.GetKeyUp(KeyCode.D))
+          KeysPressedInFrame.Remove(KeyCode.D);
+
+        if (KeysPressedInFrame.Count > 0)
+        {
+           LastKeyPressedInFrame = KeysPressedInFrame[^1];
+         LastKeyDirection = LastKeyPressedInFrame;
+        }
+        else
+          LastKeyPressedInFrame = KeyCode.None;
 
         if (!isMeleeAttacking)
         {
             Velocity = GetDirection(LastKeyPressedInFrame) * PlayerSpeed;
 
             transform.position += Velocity * Time.deltaTime;
+
+            switch(LastKeyPressedInFrame)
+            {
+                case KeyCode.W:
+                    playerAnim.Play("PlayerWalkUp", 0);
+                    break;
+                case KeyCode.D:
+                    playerAnim.Play("PlayerWalkRight", 0);
+                    break;
+                case KeyCode.A:
+                    playerAnim.Play("PlayerWalkLeft", 0);
+                    break;
+                case KeyCode.S:
+                    playerAnim.Play("PlayerWalkDown", 0);
+                    break;
+                default:
+                    playerAnim.Play("PlayerIdle", 0);
+                    break;
+
+            }
         }
     }
 
@@ -136,18 +156,18 @@ public class Movement : MonoBehaviour
             WeaponAnim.Play("Attack");
 
             Vector3 CastDirection;
-            if (GetDirection(LastKeyPressedInFrame) == Vector3.zero)
-            {
+            //if (GetDirection(LastKeyPressedInFrame) == Vector3.zero)
+           // {
                 CastDirection = transform.position + (GetDirection(LastKeyDirection) * MeleeAttackRange);
-            }
+           // }
 
-            else
-            {
-                CastDirection = transform.position + (GetDirection(LastKeyPressedInFrame) * MeleeAttackRange);
-            }
+           // else
+           // {
+           //     CastDirection = transform.position + (GetDirection(LastKeyPressedInFrame) * MeleeAttackRange);
+           // }
 
             Collider2D hitObj = Physics2D.OverlapCircle(CastDirection, MeleeAttackRadius, Enemies);
-
+           
             if (hitObj != null)
                 hitObj.GetComponent<Enemy>().Die();
         }
@@ -224,8 +244,8 @@ public class Movement : MonoBehaviour
         {
             KeyCode.W => Vector3.up,
             KeyCode.S => Vector3.down,
-            KeyCode.A => Vector3.up,
-            KeyCode.D => Vector3.down,
+            KeyCode.A => Vector3.left,
+            KeyCode.D => Vector3.right,
             KeyCode.None => Vector3.zero,
             _ => Vector3.zero
         };
